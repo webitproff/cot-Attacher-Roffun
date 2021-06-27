@@ -96,302 +96,258 @@
 Есть несколько функций, которые для этого предназначены, о них и пойдет речь дальше, с примерами кода для вставки в шаблон.
 
 Добавление элемента загрузки файла на форму создания/редактирования объекта
-function att_filebox($area, $item, $field = '', $type = 'all', $limit = -1, $tpl = 'attacher.filebox');
-
+<pre class="EnlighterJSRAW" data-enlighter-language="php">function att_filebox($area, $item, $field = '', $type = 'all', $limit = -1, $tpl = 'attacher.filebox');</pre>
 При добавлении страницы ее ID еще не существует, поэтому второй параметр указывается равным 0.
-В шаблон page.add.tpl:
-<!-- IF {PHP|cot_auth('plug', 'attacher', 'W')} -->
-     <div>
+В шаблон <strong>page.add.tpl</strong>:
+<pre class="EnlighterJSRAW" data-enlighter-language="null">&lt;!-- IF {PHP|cot_auth('plug', 'attacher', 'W')} --&gt;
+     &lt;div&gt;
         {PHP|att_filebox('page', 0)}
-     </div>
-<!-- ENDIF -->
-
-В шаблон page.edit.tpl:
-<!-- IF {PHP|cot_auth('plug', 'attacher', 'W')} -->
-     <div>
+     &lt;/div&gt;
+&lt;!-- ENDIF --&gt;</pre>
+В шаблон <strong>page.edit.tpl</strong>:
+<pre class="EnlighterJSRAW" data-enlighter-language="html">&lt;!-- IF {PHP|cot_auth('plug', 'attacher', 'W')} --&gt;
+     &lt;div&gt;
         {PAGEEDIT_FORM_ID|att_filebox('page', $this)}
-     </div>
-<!-- ENDIF -->
-
- 
+     &lt;/div&gt;
+&lt;!-- ENDIF --&gt;</pre>
+&nbsp;
 
 Вывод прикрепленных изображений в списках страниц
 
 В шаблон page.list.tpl:
-<!-- IF {LIST_ROW_ID|att_count('page',$this,'','images')} > 0 -->
-<div>
-<a href="{LIST_ROW_URL}" title="{LIST_ROW_SHORTTITLE}">
-    <img src="{LIST_ROW_ID|att_get('page',$this,'')|att_thumb($this,200,160,'crop',false)}" alt="{LIST_ROW_SHORTTITLE}">
-</a>
-</div>
-<!-- ENDIF -->
-
+<pre class="EnlighterJSRAW" data-enlighter-language="html">&lt;!-- IF {LIST_ROW_ID|att_count('page',$this,'','images')} &gt; 0 --&gt;
+&lt;div&gt;
+&lt;a href="{LIST_ROW_URL}" title="{LIST_ROW_SHORTTITLE}"&gt;
+    &lt;img src="{LIST_ROW_ID|att_get('page',$this,'')|att_thumb($this,200,160,'crop',false)}" alt="{LIST_ROW_SHORTTITLE}"&gt;
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;!-- ENDIF --&gt;</pre>
 или можно так:
-<!-- IF {LIST_ROW_ID|att_count('page',$this,'','images')} > 0 -->
-<div>
-<a href="{LIST_ROW_URL}" title="{LIST_ROW_SHORTTITLE}">
+<pre class="EnlighterJSRAW" data-enlighter-language="html">&lt;!-- IF {LIST_ROW_ID|att_count('page',$this,'','images')} &gt; 0 --&gt;
+&lt;div&gt;
+&lt;a href="{LIST_ROW_URL}" title="{LIST_ROW_SHORTTITLE}"&gt;
     {LIST_ROW_ID|att_display('page',$this,'','attacher.display.thumb','images',1)}
-</a>
-</div>
-<!-- ENDIF -->
-
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;!-- ENDIF --&gt;</pre>
 В шаблон page.enum.tpl:
-<!-- IF {РAGE_ROW_ID|att_count('page',$this,'','images')} > 0 -->
-<div>
-<a href="{PAGE_ROW_URL}" title="{PAGE_ROW_SHORTTITLE}">
-    <img src="{PAGE_ROW_ID|att_get('page',$this,'')|att_thumb($this,200,160,'crop')}" alt="{PAGE_ROW_SHORTTITLE}">
-<a>
-</div>
-<!-- ENDIF -->
-
+<pre class="EnlighterJSRAW" data-enlighter-language="html">&lt;!-- IF {РAGE_ROW_ID|att_count('page',$this,'','images')} &gt; 0 --&gt;
+&lt;div&gt;
+&lt;a href="{PAGE_ROW_URL}" title="{PAGE_ROW_SHORTTITLE}"&gt;
+    &lt;img src="{PAGE_ROW_ID|att_get('page',$this,'')|att_thumb($this,200,160,'crop')}" alt="{PAGE_ROW_SHORTTITLE}"&gt;
+&lt;a&gt;
+&lt;/div&gt;
+&lt;!-- ENDIF --&gt;</pre>
 или можно так:
-<!-- IF {PAGE_ROW_ID|att_count('page',$this,'','images')} > 0 -->
-<div>
-<a href="{PAGE_ROW_URL}" title="{PAGE_ROW_SHORTTITLE}">
+<pre class="EnlighterJSRAW" data-enlighter-language="html">&lt;!-- IF {PAGE_ROW_ID|att_count('page',$this,'','images')} &gt; 0 --&gt;
+&lt;div&gt;
+&lt;a href="{PAGE_ROW_URL}" title="{PAGE_ROW_SHORTTITLE}"&gt;
     {PAGE_ROW_ID|att_display('page',$this,'','attacher.display.thumb','images',1)}
-</a>
-</div>
-<!-- ENDIF -->
-
+&lt;/a&gt;
+&lt;/div&gt;
+&lt;!-- ENDIF --&gt;</pre>
 Варианты вывода на страницу в шаблон page.tpl:
 
 Все прикрепленные к странице файлы:
-<!-- IF {PAGE_ID|att_count('page',$this)} > 0 -->
-<div data-att-display="all">
-    <h3>{PHP.L.att_attachments}</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="html">&lt;!-- IF {PAGE_ID|att_count('page',$this)} &gt; 0 --&gt;
+&lt;div data-att-display="all"&gt;
+    &lt;h3&gt;{PHP.L.att_attachments}&lt;/h3&gt;
     {PAGE_ID|att_display('page',$this,'','attacher.display','all')}
-</div>
-<!-- ENDIF -->
-
- 
+&lt;/div&gt;
+&lt;!-- ENDIF --&gt;</pre>
+&nbsp;
 
 Галерея изображений (без скрипта галереи):
-<!-- IF {PAGE_ID|att_count('page',$this,'','images')} > 0 -->
-    <div data-att-gallery="yourgallery">
-        <h3>{PHP.L.att_gallery}</h3>
+<pre class="EnlighterJSRAW" data-enlighter-language="html">&lt;!-- IF {PAGE_ID|att_count('page',$this,'','images')} &gt; 0 --&gt;
+    &lt;div data-att-gallery="yourgallery"&gt;
+        &lt;h3&gt;{PHP.L.att_gallery}&lt;/h3&gt;
         {PAGE_ID|att_gallery('page',$this,'','attacher.gallery')}
-    </div>
-<!-- ENDIF -->
+    &lt;/div&gt;
+&lt;!-- ENDIF --&gt;</pre>
+&nbsp;
 
- 
-
-Галерея изображений через highslide — отдельный плагин:
-<!-- IF {PAGE_ID|att_count('page',$this,'','images')} > 0 -->
-<div data-att-gallery="highslide" data-att-group="mygroup">
-<h3>{PHP.L.att_gallery}</h3>
+Галерея изображений через highslide - отдельный плагин:
+<pre class="EnlighterJSRAW" data-enlighter-language="html">&lt;!-- IF {PAGE_ID|att_count('page',$this,'','images')} &gt; 0 --&gt;
+&lt;div data-att-gallery="highslide" data-att-group="mygroup"&gt;
+&lt;h3&gt;{PHP.L.att_gallery}&lt;/h3&gt;
 {PAGE_ID|att_gallery('page',$this,'','highslide.attacher.gallery')}
-</div>
-<!-- ENDIF -->
-
+&lt;/div&gt;
+&lt;!-- ENDIF --&gt;</pre>
 Список файлов для скачивания:
 
- 
-<!-- IF {PAGE_ID|att_count('page',$this,'','files')} > 0 -->
-<div data-att-downloads="download">
-    <h3>{PHP.L.att_downloads}</h3>
+&nbsp;
+<pre class="EnlighterJSRAW" data-enlighter-language="html">&lt;!-- IF {PAGE_ID|att_count('page',$this,'','files')} &gt; 0 --&gt;
+&lt;div data-att-downloads="download"&gt;
+    &lt;h3&gt;{PHP.L.att_downloads}&lt;/h3&gt;
     {PAGE_ID|att_downloads('page',$this)}
-</div>
-<!-- ENDIF -->
-
+&lt;/div&gt;
+&lt;!-- ENDIF --&gt;</pre>
 Вызов виджета загрузчика через iframe
-function att_widget($area, $item, $field = '', $tpl = 'attacher.widget', $width = '100%', $height = '200');
-
- 
-
-В шаблон page.edit.tpl:
-
-Это добавит iframe с загрузчиком файлов для существующего объекта:
-<!-- IF {PHP|cot_auth('plug', 'attacher', 'W')} -->
-<div>
-{PAGEEDIT_FORM_ID|att_widget('page', $this)}
-</div>
-<!-- ENDIF -->
-
-А это добавит ссылку на всплывающий виджет в iframe:
-<!-- IF {PHP|cot_auth('plug', 'attacher', 'W')} -->
-<div>
-{PAGEADD_FORM_ID|att_widget('page', $this, '','attacher.link')}
-</div>
-<!-- ENDIF -->
+<pre class="EnlighterJSRAW" data-enlighter-language="php">function att_widget($area, $item, $field = '', $tpl = 'attacher.widget', $width = '100%', $height = '200');</pre>
+&nbsp;
 
 В шаблон page.edit.tpl:
 
 Это добавит iframe с загрузчиком файлов для существующего объекта:
-<!-- IF {PHP|cot_auth('plug', 'attacher', 'W')} -->
-<div>
+<pre class="EnlighterJSRAW" data-enlighter-language="html">&lt;!-- IF {PHP|cot_auth('plug', 'attacher', 'W')} --&gt;
+&lt;div&gt;
 {PAGEEDIT_FORM_ID|att_widget('page', $this)}
-</div>
-<!-- ENDIF -->
-
+&lt;/div&gt;
+&lt;!-- ENDIF --&gt;</pre>
 А это добавит ссылку на всплывающий виджет в iframe:
-<!-- IF {PHP|cot_auth('plug', 'attacher', 'W')} -->
-<div>
+<pre class="EnlighterJSRAW" data-enlighter-language="html">&lt;!-- IF {PHP|cot_auth('plug', 'attacher', 'W')} --&gt;
+&lt;div&gt;
 {PAGEADD_FORM_ID|att_widget('page', $this, '','attacher.link')}
-</div>
-<!-- ENDIF -->
+&lt;/div&gt;
+&lt;!-- ENDIF --&gt;</pre>
+В шаблон page.edit.tpl:
 
- 
+Это добавит iframe с загрузчиком файлов для существующего объекта:
+<pre class="EnlighterJSRAW" data-enlighter-language="html">&lt;!-- IF {PHP|cot_auth('plug', 'attacher', 'W')} --&gt;
+&lt;div&gt;
+{PAGEEDIT_FORM_ID|att_widget('page', $this)}
+&lt;/div&gt;
+&lt;!-- ENDIF --&gt;</pre>
+А это добавит ссылку на всплывающий виджет в iframe:
+<pre class="EnlighterJSRAW" data-enlighter-language="html">&lt;!-- IF {PHP|cot_auth('plug', 'attacher', 'W')} --&gt;
+&lt;div&gt;
+{PAGEADD_FORM_ID|att_widget('page', $this, '','attacher.link')}
+&lt;/div&gt;
+&lt;!-- ENDIF --&gt;</pre>
+&nbsp;
 
 В шаблон page.tpl:
-<!-- IF {PHP|cot_auth('plug', 'attacher', 'W')} -->
-<li>{PAGE_ID|att_widget('page',$this,'','attacher.link')}</li>
-<!-- ENDIF -->
-
- 
+<pre class="EnlighterJSRAW" data-enlighter-language="html">&lt;!-- IF {PHP|cot_auth('plug', 'attacher', 'W')} --&gt;
+&lt;li&gt;{PAGE_ID|att_widget('page',$this,'','attacher.link')}&lt;/li&gt;
+&lt;!-- ENDIF --&gt;</pre>
+&nbsp;
 
 Прикрепление файлов к постам форума:
 
 В шаблон forums.posts.tpl:
-<!-- IF {PHP|cot_auth('plug', 'attacher', 'W')} AND {FORUMS_POSTS_ROW_USERID} == {PHP.usr.id} -->
+<pre class="EnlighterJSRAW" data-enlighter-language="html">&lt;!-- IF {PHP|cot_auth('plug', 'attacher', 'W')} AND {FORUMS_POSTS_ROW_USERID} == {PHP.usr.id} --&gt;
 {FORUMS_POSTS_ROW_ID|att_widget('forums',$this,'','attacher.link')}
-<!-- ENDIF -->
-
+&lt;!-- ENDIF --&gt;</pre>
 Это добавит ссылку на всплывающий виджет в iframe на странице поста. А для вывода списка файлов нужно разместить нижеприведенный код в любом месте блока FORUMS_POSTS_ROW:
-<!-- IF {FORUMS_POSTS_ROW_USERID} == {PHP.usr.id} -->
+<pre class="EnlighterJSRAW" data-enlighter-language="html">&lt;!-- IF {FORUMS_POSTS_ROW_USERID} == {PHP.usr.id} --&gt;
 {FORUMS_POSTS_ROW_ID|att_display('forums',$this)}
-<!-- ENDIF -->
-
+&lt;!-- ENDIF --&gt;</pre>
 BB-коды для встраивания в контент
 
 Для того чтобы вывести изображение внутри текста, добавленного через визуальный редактор, например статья, используется единый бб код [att_image?] c параметрами, передаваемыми после вопросительного знака, например:
-?id=15
-?id=11&width=350
-?id=2&width=350&height=350
-?id=7&width=320&height=240&alt=Image alt
-?id=88&width=320&height=240&alt=Image alt&class=myclass
-
-    id — ID изображения
-    width — ширина
-    height — высота
-    frame — метод обрезки
-    alt — альтернативный текст
-    class — css класс
-
-Обязательным является id, остальные на усмотрение. Их можно передавать все или частично, через знак &. Если в настройках указано преобразование в picture, то это правило сработает и на изображения добавленные через bb код.
+<pre class="EnlighterJSRAW" data-enlighter-language="null">?id=15
+?id=11&amp;width=350
+?id=2&amp;width=350&amp;height=350
+?id=7&amp;width=320&amp;height=240&amp;alt=Image alt
+?id=88&amp;width=320&amp;height=240&amp;alt=Image alt&amp;class=myclass</pre>
+<blockquote>id - ID изображения
+width - ширина
+height - высота
+frame - метод обрезки
+alt - альтернативный текст
+class - css класс</blockquote>
+Обязательным является id, остальные на усмотрение. Их можно передавать все или частично, через знак &amp;. Если в настройках указано преобразование в picture, то это правило сработает и на изображения добавленные через bb код.
 Описание функций обратного вызова (callback)
 
 Прикрепление файлов не ограничивается только модулем страниц и стандартными шаблонами. Можно самостоятельно настроить прикрепление файлов, соответствующие им шаблоны и к другим объектам системы, в том числе к пока не существующим. Для этого нужно сразу после сохранения объекта и до любого редиректа вызвать соответствующую функцию:
 
 Функция регистрации нового объекта
-function att_fixNewPath($area, $item);
-
-    $area — тип объекта или имя модуля. Например: page.
-    $item — id объекта. К примеру, это ID страницы, ID поста на форуме или ID комментария.
-
+<pre class="EnlighterJSRAW" data-enlighter-language="php">function att_fixNewPath($area, $item);</pre>
+<blockquote>$area - тип объекта или имя модуля. Например: page.
+$item - id объекта. К примеру, это ID страницы, ID поста на форуме или ID комментария.</blockquote>
 Эта функция по умолчанию работает для модулей forums, page. Для остальных расширений нужно самостоятельно добавить функцию. Вот как это реализовано для page в файле attacher.page.add.add.done.php:
-if (cot_auth('plug', 'attacher', 'W')) {
+<pre class="EnlighterJSRAW" data-enlighter-language="html">if (cot_auth('plug', 'attacher', 'W')) {
     if ($id) {
         att_fixNewPath('page', $id);
     }
-}
-
+}</pre>
 Функция удаления всех прикрепленных файлов
-function att_remove_all($user_id = null, $area = null, $item_id = null);
-
-    $user_id — файлы определенного пользователя.
-    $area — тип объекта или имя модуля.
-    $item_id — id удаляемого объекта.
-
+<pre class="EnlighterJSRAW" data-enlighter-language="php">function att_remove_all($user_id = null, $area = null, $item_id = null);</pre>
+<blockquote>$user_id - файлы определенного пользователя.
+$area - тип объекта или имя модуля.
+$item_id - id удаляемого объекта.</blockquote>
 Эта функция удаляет все прикрепленные к объекту файлы, если указан $user_id, то удаляются файлы прикрепленные конкретным пользователем. Вот как это реализовано для page в файле attacher.page.delete.php:
-if (cot_auth('plug', 'attacher', 'W')) {
+<pre class="EnlighterJSRAW" data-enlighter-language="php">if (cot_auth('plug', 'attacher', 'W')) {
     require_once cot_incfile('attacher', 'plug');
  
     att_remove_all(null, 'page', $id);
-}
-
+}</pre>
 Две вышеописанные функции предназначены для интеграции возможности взаимодействия API плагина attacher c другими расширениями, а дальше будут описаны функции применяемые в шаблоне.
 
 Функция создания загрузчика
-function att_filebox($area, $item, $field = '', $type = 'all', $limit = -1, $tpl = 'attacher.filebox');
-
+<pre class="EnlighterJSRAW" data-enlighter-language="html">function att_filebox($area, $item, $field = '', $type = 'all', $limit = -1, $tpl = 'attacher.filebox');</pre>
 Выводит форму загрузки файлов, если это объект без id, то второй параметр нужно указывать как 0, в остальных случаях применяется $this, получающий значение из подключенного тега. Принимает следующие параметры:
-
-    $area — тип объекта или имя модуля. Например: page.
-    $item — id объекта. К примеру, это ID страницы, ID поста на форуме или ID комментария. CoTemplate «$this» позволяет передать в этот параметр значение тега.
-    $field — имя поля. Для создания нескольких форм можно использовать, по умолчанию является пустым.
-    $type — тип загружаемых файлов. ‘all’ — все файлы или ‘file’ или ‘image’.
-    $limit — Ограничение на количество загружаемых файлов. Если указан -1 — то будут использованы ограничения, действующие для группы, которой принадлежит пользователь. 0 — неограниченно.
-    $tpl — шаблон элемента загрузки файлов.
-
+<blockquote>$area - тип объекта или имя модуля. Например: page.
+$item - id объекта. К примеру, это ID страницы, ID поста на форуме или ID комментария. CoTemplate «$this» позволяет передать в этот параметр значение тега.
+$field - имя поля. Для создания нескольких форм можно использовать, по умолчанию является пустым.
+$type - тип загружаемых файлов. 'all' - все файлы или 'file' или 'image'.
+$limit - Ограничение на количество загружаемых файлов. Если указан -1 - то будут использованы ограничения, действующие для группы, которой принадлежит пользователь. 0 - неограниченно.
+$tpl - шаблон элемента загрузки файлов.</blockquote>
 Функция вызова виджета загрузки в iframe
-function att_widget($area, $item, $field = '', $tpl = 'attacher.widget', $width = '100%', $height = '200');
-
+<pre class="EnlighterJSRAW" data-enlighter-language="php">function att_widget($area, $item, $field = '', $tpl = 'attacher.widget', $width = '100%', $height = '200');</pre>
 Эта функция используется для создания виждета прикрепления файлов, в зависимости от параметра $tpl выводит виджет загрузчика во всплывающем окне, или же ссылку на всплывающий по клику.
-
-    $area — определяет тип содержимого к которому прикрепляются файлы или код модуля / плагина, например ‘page’, ‘forums’, ‘comments’, и т.д.
-    $item — ID объекта, к которому прикрепляются файлы.
-    $field — имя поля. Можно оставить пустым. Позволяет к одному объекту прирепить несколько групп файлов.
-    $tpl — Код шаблона, содержащего html код виджета. «attacher.widget» вставляет диалог в iframe, а «attacher.link» (см.далее) добавляет ссылку на всплывающий диалог с загрузчиком.
-    $width — Ширина iframe.
-    $height — Высота iframe.
-
+<blockquote>$area - определяет тип содержимого к которому прикрепляются файлы или код модуля / плагина, например 'page', 'forums', 'comments', и т.д.
+$item - ID объекта, к которому прикрепляются файлы.
+$field - имя поля. Можно оставить пустым. Позволяет к одному объекту прирепить несколько групп файлов.
+$tpl - Код шаблона, содержащего html код виджета. «attacher.widget» вставляет диалог в iframe, а «attacher.link» (см.далее) добавляет ссылку на всплывающий диалог с загрузчиком.
+$width - Ширина iframe.
+$height - Высота iframe.</blockquote>
 Функция вывода загруженных файлов
-function att_display($area, $item, $field = '', $tpl = 'attacher.display', $type = 'all', $limit = 0, $order = '');
-
+<pre class="EnlighterJSRAW" data-enlighter-language="php">function att_display($area, $item, $field = '', $tpl = 'attacher.display', $type = 'all', $limit = 0, $order = '');</pre>
 Эта функция используется для отображения изображений, уже прикрепленных к объекту. Может отображать их все вместе, или только определенный тип файлов.
-
-    $area — определяет из какого объекта выводить — код модуля / плагина.
-    $item — ID объекта, файлы которого выводятся.
-    $field — имя поля выводимого объекта (если для загрузчика указывали).
-    $tpl — код шаблона для отображения, «attacher.display», «attacher.display.thumb».
-    $type — тип выводимых файлов. ‘all’ — все файлы или ‘file’ или ‘image’.
-    $limit — количество выводимых объектов, 0 — все.
-    $order — сортировка, если не указан, то будет по умолчанию ASC.
-
+<blockquote>$area - определяет из какого объекта выводить - код модуля / плагина.
+$item - ID объекта, файлы которого выводятся.
+$field - имя поля выводимого объекта (если для загрузчика указывали).
+$tpl - код шаблона для отображения, «attacher.display», «attacher.display.thumb».
+$type - тип выводимых файлов. 'all' - все файлы или 'file' или 'image'.
+$limit - количество выводимых объектов, 0 - все.
+$order - сортировка, если не указан, то будет по умолчанию ASC.</blockquote>
 Функция вывода галереи изображений
-function att_gallery($area, $item, $field = '', $tpl = 'attacher.gallery', $limit = 0, $order = '');
-
+<pre class="EnlighterJSRAW" data-enlighter-language="php">function att_gallery($area, $item, $field = '', $tpl = 'attacher.gallery', $limit = 0, $order = '');</pre>
 Эта функция используется для отображения файлов, уже прикрепленных к объекту.
-
-    $area — определяет из какого объекта выводить — код модуля / плагина.
-    $item — ID объекта, файлы которого выводятся.
-    $field — имя поля выводимого объекта (если для загрузчика указывали).
-    $tpl — код шаблона для отображения, «attacher.gallery».
-    $limit — количество выводимых объектов, 0 — все.
-    $order — сортировка, если не указан, то будет по умолчанию ASC.
-
+<blockquote>$area - определяет из какого объекта выводить - код модуля / плагина.
+$item - ID объекта, файлы которого выводятся.
+$field - имя поля выводимого объекта (если для загрузчика указывали).
+$tpl - код шаблона для отображения, «attacher.gallery».
+$limit - количество выводимых объектов, 0 - все.
+$order - сортировка, если не указан, то будет по умолчанию ASC.</blockquote>
 Плагин attacher выдает сами файлы для галереи, ничего не зная о js скриптах, которые будут подключены. Такой подход делает возможным подключение разных библиотек, не привязываясь к директории аттачера или скриптам по умолчанию. Таким образом работает плагин highslide, который берет параметры изображений галереи, и выводит в своём tpl файле, подключая нужные скрипты.
 
 Функция подсчета количества вложений
-function att_count($area, $item, $field = '', $type = 'all');
-
-    $area — определяет из какого объекта выводить — код модуля / плагина.
-    $item — ID объекта, файлы которого выводятся.
-    $field — имя поля выводимого объекта (если для загрузчика указывали).
-    $type — тип выводимых файлов. ‘all’ — все файлы или ‘file’ или ‘image’.
-
-Параметр $field может принимать значение ‘_all_’. В этом случае функция вернет общее количество файлов, прикрепленных к объекту (ко всем «полям»).
+<pre class="EnlighterJSRAW" data-enlighter-language="php">function att_count($area, $item, $field = '', $type = 'all');</pre>
+<blockquote>$area - определяет из какого объекта выводить - код модуля / плагина.
+$item - ID объекта, файлы которого выводятся.
+$field - имя поля выводимого объекта (если для загрузчика указывали).
+$type - тип выводимых файлов. 'all' - все файлы или 'file' или 'image'.</blockquote>
+Параметр $field может принимать значение '_all_'. В этом случае функция вернет общее количество файлов, прикрепленных к объекту (ко всем «полям»).
 Функция вывода списка файлов для скачивания
-function att_downloads($area, $item, $field = '', $tpl = 'attacher.downloads', $limit = 0, $order = '');
-
+<pre class="EnlighterJSRAW" data-enlighter-language="php">function att_downloads($area, $item, $field = '', $tpl = 'attacher.downloads', $limit = 0, $order = '');</pre>
 Выводит отдельным блоком файлы доступные для скачивания.
-
-    $area — определяет из какого объекта выводить — код модуля / плагина.
-    $item — ID объекта, файлы которого выводятся для скачивания.
-    $field — имя поля выводимого объекта (если для загрузчика указывали).
-    $tpl — код шаблона для отображения, «attacher.downloads».
-    $limit — количество выводимых объектов, 0 — все.
-    $order — сортировка, если не указан, то будет по умолчанию ASC.
-
+<blockquote>$area - определяет из какого объекта выводить - код модуля / плагина.
+$item - ID объекта, файлы которого выводятся для скачивания.
+$field - имя поля выводимого объекта (если для загрузчика указывали).
+$tpl - код шаблона для отображения, «attacher.downloads».
+$limit - количество выводимых объектов, 0 - все.
+$order - сортировка, если не указан, то будет по умолчанию ASC.</blockquote>
 Функция создания копии изображения
-function att_thumb($id, $width = 0, $height = 0, $frame = '', $watermark = true);
-
+<pre class="EnlighterJSRAW" data-enlighter-language="php">function att_thumb($id, $width = 0, $height = 0, $frame = '', $watermark = true);</pre>
 Эта функция генерирует копию изображения и возвращает её url.
-
-    $id — id файла.
-    $width — ширина генерируемого изображения.
-    $height — высота генерируемого изображения.
-    $frame — режим кадрирования. Может принимать следующие значения:
-    — ‘width’ заполняет миниатюру по ширине и сохраняет соотношение сторон.
-    — ‘height’ заполняет миниатюру по высоте и сохраняет соотношение сторон.
-    — ‘auto’ (по-умолчанию) сохраняет соотношение сторон уменьшая изображение таком образом, чтобы его размеры не превысили заданных.
-    — ‘crop’ уменьшает изображение сохраняя соотношение сторон и обрезает изображение так, чтобы оно полностью заполнило указанные размеры.
-    $watermark — наложение водяного знака.
-
+<blockquote>$id - id файла.
+$width - ширина генерируемого изображения.
+$height - высота генерируемого изображения.
+$frame - режим кадрирования. Может принимать следующие значения:
+- 'width' заполняет миниатюру по ширине и сохраняет соотношение сторон.
+- 'height' заполняет миниатюру по высоте и сохраняет соотношение сторон.
+- 'auto' (по-умолчанию) сохраняет соотношение сторон уменьшая изображение таком образом, чтобы его размеры не превысили заданных.
+- 'crop' уменьшает изображение сохраняя соотношение сторон и обрезает изображение так, чтобы оно полностью заполнило указанные размеры.
+$watermark - наложение водяного знака.</blockquote>
 Функция получения данных элемента
-function att_get($area, $item, $field = '', $column = '', $number = 'first');
+<pre class="EnlighterJSRAW" data-enlighter-language="php">function att_get($area, $item, $field = '', $column = '', $number = 'first');</pre>
+Это не все функции плагина, их намного больше, но для интеграции более чем достаточно. 
+	
+Если нужно удалить все копии изображений это можно сделать в панели управления аттачера (Администрирование), там же можно и по клику удалить не прикрепленные изображения, если такие найдутся плагином.
 
-Это не все функции плагина, их намного больше, но для интеграции более чем достаточно. Если нужно удалить все копии изображений это можно сделать в панели управления аттачера (Администрирование), там же можно и по клику удалить не прикрепленные изображения, если такие найдутся плагином.
+
 	---
 <h1>#SUPPORT</h1>
 * документация http://freelance-script.abuyfile.com/<br>
