@@ -19,11 +19,14 @@ Order=15
 
 require_once cot_incfile('attacher', 'plug');
 
-if ($cfg['plugin']['attacher']['thumb_clickable'] !== 'default') {
-      $text = preg_replace('#<a[^>]+>.*?<img(.+?)src="(.+?)' . $cfg['plugin']['attacher']['folder'] . '/_thumbs/(.+?)[+>].*?</a>#i','<img$1src="$2' . $cfg['plugin']['attacher']['folder'] . '/_thumbs/$3>',$text);
-}
+if (!empty($cfg['plugin']['attacher']['thumb_clickable']) && $cfg['plugin']['attacher']['thumb_clickable']  !== 'default') {
+	$text = isset(cot::$cfg['plugin']['attacher']['thumb_clickable']) ? cot::$cfg['plugin']['attacher']['thumb_clickable'] : null;
+	$text = isset(cot::$cfg['plugin']['attacher']['thumb_clickable']) ? cot::$cfg['plugin']['attacher']['thumb_clickable'] : null;
+	$text = preg_replace('#<a[^>]+>.*?<img(.+?)src="(.+?)' . cot::$cfg['plugin']['attacher']['folder'] . '/_thumbs/(.+?)[+>].*?</a>#i','<img$1src="$2' . cot::$cfg['plugin']['attacher']['folder'] . '/_thumbs/$3>',$text);
+	}
 
-$text = preg_replace_callback('`<img(.+?)src="(.+?)' . $cfg['plugin']['attacher']['folder'] . '/_thumbs/([0-9]+)/' . $cfg['plugin']['attacher']['prefix'] . '([0-9]+)-(.+?)x(.+?)-(.+?)\.(.+?)"(.*?)[+>]`i','att_customizable_thumb',$text);
+
+$text = preg_replace_callback('`<img(.+?)src="(.+?)' . cot::$cfg['plugin']['attacher']['folder'] . '/_thumbs/([0-9]+)/' . cot::$cfg['plugin']['attacher']['prefix'] . '([0-9]+)-(.+?)x(.+?)-(.+?)\.(.+?)"(.*?)[+>]`i','att_customizable_thumb',$text);
 
 $text = str_replace('[att_thumb?','[att_image?',$text);
 $text = preg_replace_callback('`\[att_image\?(.+?)\]`i','att_customizable_thumb_bbcode',$text);
