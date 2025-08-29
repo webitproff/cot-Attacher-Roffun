@@ -4,6 +4,7 @@
 
 <img src="https://raw.githubusercontent.com/webitproff/cot-Attacher-Roffun/refs/heads/main/attacher.png" alt="Attacher Plugin for Cotonti Siena 0.9.26+, PHP 8.4+">
 
+## [Help & Support](https://abuyfile.com/ru/forums/cotonti/custom/plugs/attacher)
 
 ## Key Features
 
@@ -759,3 +760,7 @@ ___
 - **Загрузка по URL**: Реализована через JavaScript Load Image, позволяет загружать изображения с внешних сайтов без скачивания на устройство.
 - **Локализация**: Поддерживается через языковые файлы (`attacher.<lang>.lang.php`).
 _____
+
+## [Help & Support](https://abuyfile.com/ru/forums/cotonti/custom/plugs/attacher)
+
+**webitproff 2025-08-29**
