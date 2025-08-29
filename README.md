@@ -2,6 +2,9 @@
 
 **Attacher** is a powerful and versatile extension for Cotonti CMF (version 0.9.26+, PHP 8.4+), designed for managing the upload, processing, and display of files and images. The plugin allows attaching files to various system objects, such as articles, forum posts, product cards, or custom modules, and provides flexible tools for working with media files. It supports asynchronous uploads, image processing, integration with visual editors, and display as galleries or download lists.
 
+<img src="https://raw.githubusercontent.com/webitproff/cot-Attacher-Roffun/refs/heads/main/attacher.png" alt="Attacher Plugin for Cotonti Siena 0.9.26+, PHP 8.4+">
+
+
 ## Key Features
 
 1. **Flexible File Upload**:
