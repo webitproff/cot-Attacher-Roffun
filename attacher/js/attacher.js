@@ -192,33 +192,88 @@ $(function () {
         e.preventDefault();
     });
 
-    // --- FIXED: Handle URL upload with formData ---
-    $('.fileupload').on('click', '.attacher-url-upload', function() {
-        var formId = $(this).data('form-id');
-        var urlInput = $('#attacher_url_' + formId);
-        var url = urlInput.val();
-        if (!url) {
-            alert('Please enter a file URL');
-            return;
-        }
+	// --- ГИБРИДНЫЙ: сначала fetch (старый способ), при ошибке — серверный cURL (новый способ) ---
+	$('.fileupload').on('click', '.attacher-url-upload', function() {
+		var formId = $(this).data('form-id');
+		var urlInput = $('#attacher_url_' + formId);
+		var url = urlInput.val().trim();
+		if (!url) {
+			alert('Please enter a file URL');
+			return;
+		}
 
-        fetch(url)
-            .then(res => res.blob())
-            .then(blob => {
-                var filename = url.split('/').pop() || 'file';
-                var file = new File([blob], filename, { type: blob.type || 'application/octet-stream' });
+		var btn = $(this);
+		btn.prop('disabled', true);
+		var originalText = btn.text();
+		btn.text('Uploading...');
 
-                $('#fileupload_' + formId).fileupload('add', {
-                    files: [file],
-                    formData: {
-                        param: attConfig[formId].param,
-                        x: x
-                    }
-                });
-                urlInput.val('');
-            })
-            .catch(() => {
-                alert('Failed to fetch file from URL');
-            });
-    });
+		var x = $('input[name="x"][type="hidden"]').first().val();
+
+		// Сначала пробуем старый способ: fetch напрямую
+		fetch(url)
+			.then(res => {
+				if (!res.ok) throw new Error('HTTP error ' + res.status);
+				return res.blob();
+			})
+			.then(blob => {
+				var filename = url.split('/').pop() || 'file';
+				// Пытаемся определить расширение из Content-Type, если в имени нет
+				var ext = blob.type.split('/')[1];
+				if (ext && !filename.includes('.')) {
+					filename += '.' + ext;
+				}
+				var file = new File([blob], filename, { type: blob.type || 'application/octet-stream' });
+
+				// Добавляем файл через стандартный метод плагина (без перезагрузки списка)
+				$('#fileupload_' + formId).fileupload('add', {
+					files: [file],
+					formData: {
+						param: attConfig[formId].param,
+						x: x
+					}
+				});
+				urlInput.val('');
+				btn.prop('disabled', false).text(originalText);
+			})
+			.catch(fetchError => {
+				console.log('Fetch failed, trying server proxy (cURL):', fetchError);
+				// Если fetch не сработал (CORS, таймаут и т.п.) – используем серверный метод
+				var formData = {
+					url: url,
+					area: attConfig[formId].area,
+					item: attConfig[formId].item,
+					field: attConfig[formId].field,
+					param: attConfig[formId].param,
+					x: x
+				};
+				$.ajax({
+					url: $('#fileupload_' + formId).fileupload('option', 'url'),
+					type: 'POST',
+					data: formData,
+					dataType: 'json',
+					success: function(response) {
+						if (response.files && response.files.length > 0) {
+							// Добавляем полученный файл в интерфейс через обработчик done (без очистки списка)
+							var fileInput = $('#fileupload_' + formId);
+							$(fileInput[0]).fileupload('option', 'done')
+								.call(fileInput[0], $.Event('done'), {result: response});
+							urlInput.val('');
+						} else if (response.error) {
+							alert('Server error: ' + response.error);
+						} else {
+							alert('Unknown server response');
+						}
+					},
+					error: function(xhr, status, error) {
+						alert('Server upload failed: ' + error);
+					}
+				});
+			})
+			.always(function() {
+				// В случае fetch-ветки кнопка разблокируется в then, в случае серверной – в complete
+				// Но для серверной части complete уже установлен внутри $.ajax
+			});
+	});
+
 });
+
