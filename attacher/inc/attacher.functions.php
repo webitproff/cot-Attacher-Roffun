@@ -970,13 +970,23 @@ function att_thumb($id, $width = 0, $height = 0, $frame = '', $watermark = true)
  */
 function att_cot_thumb($source, $target, $width, $height, $resize = 'crop', $quality = 85, $upscale = false)
 {
-    $ext = strtolower(pathinfo($source, PATHINFO_EXTENSION));
-    list($width_orig, $height_orig) = getimagesize($source);
+    if (!file_exists($source)) {
+        return false;
+    }
+
+    // Определяем тип изображения по содержимому файла
+    $image_info = @getimagesize($source);
+    if (!$image_info) {
+        return false;
+    }
+    $width_orig = $image_info[0];
+    $height_orig = $image_info[1];
+    $mime = $image_info['mime'];
 
     if (!$upscale && $width_orig <= $width && $height_orig <= $height) {
         // Do not upscale smaller images, just copy them
         copy($source, $target);
-        return;
+        return true;
     }
 
     $x_pos = 0;
@@ -987,6 +997,16 @@ function att_cot_thumb($source, $target, $width, $height, $resize = 'crop', $qua
 
     // Avoid loading images there's not enough memory for
     if (function_exists('cot_img_check_memory') && !cot_img_check_memory($source, (int) ceil($width * $height * 4 / 1048576))) {
+        return false;
+    }
+
+    // Загружаем исходное изображение через file_get_contents для универсальности
+    $image_data = file_get_contents($source);
+    if (!$image_data) {
+        return false;
+    }
+    $oldimage = @imagecreatefromstring($image_data);
+    if (!$oldimage) {
         return false;
     }
 
@@ -1032,133 +1052,53 @@ function att_cot_thumb($source, $target, $width, $height, $resize = 'crop', $qua
             }
         }
 
-       // $newimage = imagecreatetruecolor($width, $height); //
-		$int_width = (int)round($width);
-		$int_height = (int)round($height);
-		$newimage = imagecreatetruecolor($int_width, $int_height);
-
+        $int_width = (int)round($width);
+        $int_height = (int)round($height);
+        $newimage = imagecreatetruecolor($int_width, $int_height);
     }
 
-    if ($ext == 'gif' || $ext == 'png') {
+    // Сохраняем прозрачность для PNG/GIF
+    if (in_array($mime, ['image/gif', 'image/png'])) {
         imagealphablending($newimage, false);
         $color = imagecolortransparent($newimage, imagecolorallocatealpha($newimage, 0, 0, 0, 127));
         imagefill($newimage, 0, 0, $color);
         imagesavealpha($newimage, true);
     }
 
-    switch ($ext) {
-            case 'gif':
-                  $oldimage = imagecreatefromgif($source);
-                  break;
-            case 'png':
-                  $oldimage = imagecreatefrompng($source);
-                  break;
-            case 'webp':
-                  $oldimage = imagecreatefromwebp($source);
-                  break;
-            default:
-                  $oldimage = imagecreatefromjpeg($source);
-                  break;
-      }
+    imagecopyresampled(
+        $newimage,
+        $oldimage,
+        (int)round($x_pos),
+        (int)round($y_pos),
+        0, 0,
+        (int)round($width),
+        (int)round($height),
+        (int)round($width_orig),
+        (int)round($height_orig)
+    );
 
-    //imagecopyresampled($newimage, $oldimage, $x_pos, $y_pos, 0, 0, $width, $height, $width_orig, $height_orig);
-	imagecopyresampled(
-		$newimage,
-		$oldimage,
-		(int)round($x_pos),
-		(int)round($y_pos),
-		0, 0,
-		(int)round($width),
-		(int)round($height),
-		(int)round($width_orig),
-		(int)round($height_orig)
-	);
-
-    switch ($ext) {
-            case 'gif':
-                  imagegif($newimage, $target);
-                  break;
-            case 'png':
-                  imagepng($newimage, $target);
-                  break;
-            case 'webp':
-                  imagewebp($newimage, $target);
-                  break;
-            default:
-                  imageinterlace($newimage, true);
-                  imagejpeg($newimage, $target, $quality);
-                  break;
-      }
+    // Сохраняем результат в зависимости от расширения целевого файла
+    $target_ext = strtolower(pathinfo($target, PATHINFO_EXTENSION));
+    switch ($target_ext) {
+        case 'gif':
+            imagegif($newimage, $target);
+            break;
+        case 'png':
+            imagepng($newimage, $target);
+            break;
+        case 'webp':
+            imagewebp($newimage, $target, $quality);
+            break;
+        default:
+            imageinterlace($newimage, true);
+            imagejpeg($newimage, $target, $quality);
+            break;
+    }
 
     imagedestroy($newimage);
     imagedestroy($oldimage);
+    return true;
 }
-
-/**
- * Adds watermark for image.
- *
- * @param $source
- * @param $target
- * @param string $watermark watermark file.
- * @param int $jpegquality
- * @return bool
- */
-function att_watermark($source, $target, $watermark = '', $jpegquality = 85)
-{
-    if (empty($watermark)) {
-        return false;
-    }
-
-    $sourceExt = att_get_ext($source);
-    $targetExt = att_get_ext($target);
-
-    $is_img = (int) in_array($sourceExt, array('gif', 'jpg', 'jpeg', 'png', 'webp'));
-    if (!$is_img) {
-        return false;
-    }
-
-    // Load the image
-    $image = imagecreatefromstring(file_get_contents($source));
-    $w = imagesx($image);
-    $h = imagesy($image);
-
-    // Load the watermark
-    $watermark = imagecreatefrompng($watermark);
-    $ww = imagesx($watermark);
-    $wh = imagesy($watermark);
-
-    $wmAdded = false;
-    if (($ww + 60) < $w && ($wh + 40) < $h) {
-        imagealphablending($image, true);
-
-        if ($targetExt == 'gif' || $targetExt == 'png') {
-            imagesavealpha($image, true);
-        }
-
-        imagecopy($image, $watermark, $w - 40 - $ww, $h-$wh-20, 0, 0, $ww, $wh);
-        unlink($target);
-
-        switch ($targetExt) {
-              case 'gif':
-                  imagegif($image, $target);
-                  break;
-
-              case 'png':
-                  imagepng($image, $target);
-                  break;
-
-              default:
-                  imagejpeg($image, $target, $jpegquality);
-                  break;
-          }
-        $wmAdded = true;
-    }
-
-    imagedestroy($watermark);
-    imagedestroy($image);
-    return $wmAdded;
-}
-
 
 /**
  * Adds background texture for image.
@@ -1674,4 +1614,5 @@ function att_customizable_thumb_bbcode($m)
         $snippet = '<span' . $thumb_wrapper . ' data-snippet="attacher">' .$snippet. '</span>';
     }
     return $snippet;
+
 }
