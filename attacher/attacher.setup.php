@@ -5,8 +5,8 @@ Code=attacher
 Name=Attacher
 Category=files-media
 Description=Attach files to posts and pages
-Version=1.0.25
-Date=2025-08-29
+Version=2.0.26
+Date=March 03 2026
 Author=Roffun
 Copyright=Copyright (c) Roffun, webitproff
 Notes=
@@ -72,3 +72,4 @@ thumb_wrapper_class=96:string:::
  * @license BSD License
  **/
 defined('COT_CODE') or die('Wrong URL.');
+
