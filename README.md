@@ -20,6 +20,7 @@
 - Маркетплейс расширений Cotonti: [abuyfile.com/ru/market/cotonti/plugs/attacher-files-new](https://abuyfile.com/ru/market/cotonti/plugs/attacher-files-new)
 - Форум поддержки: [abuyfile.com/ru/forums/cotonti/custom/plugs/attacher](https://abuyfile.com/ru/forums/cotonti/custom/plugs/attacher)
 - Автор: [webitproff](https://github.com/webitproff)
+- **[Справочник по функции `att_display()` плагина Attacher](https://github.com/webitproff/cot-Attacher-Roffun/blob/main/MANUAL_RU_(att_display).md)**
 
 ## Содержание
 
